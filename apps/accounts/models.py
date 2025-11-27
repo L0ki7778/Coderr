@@ -1,11 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-    
+
 class User(AbstractUser):
     ROLE_CHOICES = [
-        ("customer", "Customer"),
-        ("offerer", "Offerer")
+        ("customer", "customer"),
+        ("offerer", "offerer")
     ]
 
     type = models.CharField(choices=ROLE_CHOICES,  max_length=20)
