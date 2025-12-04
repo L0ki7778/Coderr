@@ -6,6 +6,23 @@ class OfferDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model=offers.Details
         exclude=["offer"]
+        
+class SingleOfferDetailSerializer(serializers.ModelSerializer):
+    url=serializers.SerializerMethodField()
+    
+    class Meta:
+        model = offers.Details
+        fields = ['id', 'url']
+    
+    def get_url(self, obj):
+        return f'http://127.0.0.1:8000/api/offerdetails/{obj.id}/'
+    
+class SingleOfferSerializer(serializers.ModelSerializer):
+    details = SingleOfferDetailSerializer(many=True)
+    
+    class Meta:
+        model=offers.Offers
+        exclude = ["user","created_at", "updated_at"]
 
 class OfferCreateSerializer(serializers.ModelSerializer):
     details = OfferDetailsSerializer(many=True)
@@ -14,6 +31,7 @@ class OfferCreateSerializer(serializers.ModelSerializer):
         model = offers.Offers
         
         exclude = ["user","created_at", "updated_at"]
+        
         
     def create(self, validated_data):
         request = self.context.get("request")
@@ -24,5 +42,4 @@ class OfferCreateSerializer(serializers.ModelSerializer):
             offers.Details.objects.create(offer=offer, **detail)
         return offer
         
-        
-    
+

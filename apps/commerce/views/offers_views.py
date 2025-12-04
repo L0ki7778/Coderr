@@ -8,12 +8,18 @@ from rest_framework import authentication
 class OffersViewset(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
     serializer_class = offers_serializers.OfferCreateSerializer
-    queryset = offers.Offers.objects.all()
+    queryset = offers.Offers.objects.all().prefetch_related('details')
+    
+    def get_serializer_class(self):
+        if self.action == 'retrieve':
+            return offers_serializers.SingleOfferSerializer
+        return self.serializer_class
+        
 
 
-class OfferdetailView(views.APIView):
-    authentication_classes: [authentication.TokenAuthentication]
-    permission_classes: [AllowAny]
+class OfferDetailView(views.APIView):
+    authentication_classes= [authentication.TokenAuthentication]
+    permission_classes= [AllowAny]
 
     def get(self, request, *args, **kwargs):
         detail = offers.Details.objects.get(id=kwargs["detail_id"])
