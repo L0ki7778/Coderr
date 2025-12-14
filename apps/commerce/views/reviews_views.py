@@ -2,18 +2,31 @@ from rest_framework.generics import ListCreateAPIView, GenericAPIView
 from rest_framework.mixins import DestroyModelMixin, UpdateModelMixin
 from apps.commerce.serializers.reviews_serializers import ReviewSerializer
 from apps.commerce.models.reviews import Review
+from apps.accounts.models import User
 from ..permissions import IsCustomer
+from rest_framework.response import Response
 
 
 class ReviewListCreateView(ListCreateAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
 
-    def perform_create(self, serializer):
-        business_user = self.get
-        serializer.save(reviewer=self.request.user)
-    
+    def create(self, request, *args, **kwargs):
+        requested_buisiness_user = request.data.get("business_user")
+        buisiness_user = User.objects.get(id=requested_buisiness_user)
+        if not buisiness_user.type == "offerer" or self.request.user.type == "offerer":
+            return Response({'Invalid': 'only customers can review offerers only.'}, status=403)
+        elif buisiness_user.type == 'offerer' and self.request.user.type == "customer":
+            review = Review.objects.create(
+                business_user=buisiness_user,
+                reviewer=self.request.user,
+                rating=request.data.get("rating"),
+                description=request.data.get("description")
+            )
+            serializer = ReviewSerializer(review)
+        return Response(serializer.data)
 
-class ReviewPatchDeleteView(GenericAPIView,DestroyModelMixin,UpdateModelMixin):
+
+class ReviewPatchDeleteView(GenericAPIView, DestroyModelMixin, UpdateModelMixin):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
