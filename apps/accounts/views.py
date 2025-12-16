@@ -11,6 +11,7 @@ from .serializers import (
 from rest_framework.authtoken.models import Token
 from rest_framework.request import Request
 from rest_framework.permissions import AllowAny
+from .permissions import ProfileOwner
 from rest_framework import status
 from .models import User
 
@@ -59,7 +60,7 @@ class LoginView(APIView):
 
 
 class ProfileUpdateDeleteView(RetrieveUpdateAPIView):
-    permission_classes = [AllowAny]
+    permission_classes = [ProfileOwner]
     serializer_class = ProfileSerializer
     queryset = User
 

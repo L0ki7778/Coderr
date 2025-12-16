@@ -4,9 +4,9 @@ from apps.accounts.models import User
 
 
 class Offers(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='creator_id')
     title = models.CharField(max_length=30, blank=False, null=False)
-    image = models.ImageField(null=True)
+    image = models.ImageField(null=True,blank=True)
     description = models.TextField(null=False, blank=False)
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(auto_now_add=True)
