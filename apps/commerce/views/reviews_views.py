@@ -1,5 +1,4 @@
-from rest_framework.generics import ListCreateAPIView, GenericAPIView
-from rest_framework.mixins import DestroyModelMixin, UpdateModelMixin
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from apps.commerce.serializers.reviews_serializers import ReviewSerializer
 from apps.commerce.models.reviews import Review
 from apps.accounts.models import User
@@ -12,6 +11,7 @@ class ReviewListCreateView(ListCreateAPIView):
     serializer_class = ReviewSerializer
 
     def create(self, request, *args, **kwargs):
+        # region create
         requested_buisiness_user = request.data.get("business_user")
         buisiness_user = User.objects.get(id=requested_buisiness_user)
         if not buisiness_user.type == "offerer" or self.request.user.type == "offerer":
@@ -23,10 +23,13 @@ class ReviewListCreateView(ListCreateAPIView):
                 rating=request.data.get("rating"),
                 description=request.data.get("description")
             )
-            serializer = ReviewSerializer(review)
+            # endregion 
+            serializer = self.get_serializer(review)
         return Response(serializer.data)
 
 
-class ReviewPatchDeleteView(GenericAPIView, DestroyModelMixin, UpdateModelMixin):
+class ReviewPatchDeleteView(RetrieveUpdateDestroyAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
+    permission_classes = [IsCustomer]
+    
