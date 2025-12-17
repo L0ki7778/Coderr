@@ -18,4 +18,9 @@ class OrderSerializer(serializers.ModelSerializer):
         ]
         exclude=['offer_detail']
 
-   
+    def update(self, instance, validated_data):
+        for attr, value in validated_data.items():
+            if attr == "status":
+                setattr(instance,attr,value)
+                instance.save()
+        return instance

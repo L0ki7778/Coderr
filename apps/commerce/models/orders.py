@@ -18,5 +18,5 @@ class Orders(models.Model):
     business_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="offerer")
     status = models.CharField(max_length=20, choices=ORDER_STATES, default=IN_PROGRESS)
     offer_detail = models.ForeignKey(Details, on_delete=models.PROTECT,related_name="details")
-    created_at = models.DateTimeField(auto_now=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

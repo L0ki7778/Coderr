@@ -8,8 +8,8 @@ class Review(models.Model):
     reviewer = models.ForeignKey(User, on_delete=models.CASCADE, related_name="given_reviews")
     rating = models.IntegerField()
     description = models.TextField()
-    created_at = models.DateTimeField(auto_now=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
         constraints = [
@@ -19,7 +19,7 @@ class Review(models.Model):
     def clean(self):
         super().clean()
         print(self.business_user, self.reviewer)
-        if self.business_user.type != 'offerer':
+        if self.business_user.type != 'business':
             raise ValidationError({'business_user': 'Only offerers can be reviewed.'})
         if self.reviewer.type != 'customer':
             raise ValidationError({'reviewer': 'Only customers can write reviews.'})

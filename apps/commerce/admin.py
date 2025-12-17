@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import offers
+from .models import offers, orders, reviews
 
 
 class DetailsInline(admin.TabularInline):
@@ -9,3 +9,7 @@ class DetailsInline(admin.TabularInline):
 @admin.register(offers.Offers)
 class OffersAdmin(admin.ModelAdmin):
     inlines=[DetailsInline]
+    
+admin.site.register(orders.Orders)
+
+admin.site.register(reviews.Review)

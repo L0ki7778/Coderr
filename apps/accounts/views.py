@@ -10,7 +10,7 @@ from .serializers import (
 )
 from rest_framework.authtoken.models import Token
 from rest_framework.request import Request
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated,AllowAny
 from .permissions import ProfileOwner
 from rest_framework import status
 from .models import User
@@ -30,7 +30,7 @@ class RegistrationView(APIView):
             response_data = {
                 "token": token.key,
                 "username": username,
-                "type": type,
+                "user_id": saved_account.id,
                 "email": email,
             }
         else:
@@ -59,13 +59,14 @@ class LoginView(APIView):
         return Response(data)
 
 
-class ProfileUpdateDeleteView(RetrieveUpdateAPIView):
-    permission_classes = [ProfileOwner]
+class ProfileRetrieveUpdateView(RetrieveUpdateAPIView):
+    permission_classes = [IsAuthenticated,ProfileOwner]
     serializer_class = ProfileSerializer
-    queryset = User
+    queryset = User.objects.all()
 
 
 class ProfileTypeListView(ListAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = ProfileTypeListSerializer
     profile_type = None
 
