@@ -22,10 +22,13 @@ class SingleOfferDetailSerializer(serializers.ModelSerializer):
 
 class SingleOfferSerializer(serializers.ModelSerializer):
     details = SingleOfferDetailSerializer(many=True)
+    min_price = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
+    min_delivery_time = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
 
     class Meta:
         model = offers.Offers
-        exclude = ["user", "created_at", "updated_at"]
+        fields = '__all__'
+        read_only_fields=['user',"created_at", "updated_at"]
 
 
 class OfferCreateSerializer(serializers.ModelSerializer):

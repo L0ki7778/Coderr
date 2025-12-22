@@ -59,7 +59,8 @@ class OrderCountView(views.APIView):
         if path.startswith('/api/completed-order-count/'):
             orders = Orders.objects.filter(
                 business_user=kwargs['business_user_id'], status="completed")
+            return response.Response({"completed_order_count": orders.count()})
         else:
             orders = Orders.objects.filter(
-                business_user=kwargs['business_user_id'])
-        return response.Response({"completed_order_count": orders.count()})
+                business_user=kwargs['business_user_id'], status="in_progress")
+        return response.Response({"order_count": orders.count()})

@@ -12,6 +12,6 @@ urlpatterns = [
     path("order-count/<int:business_user_id>/",orders_views.OrderCountView.as_view()),
     path("completed-order-count/<int:business_user_id>/",orders_views.OrderCountView.as_view()),
     path("reviews/", reviews_views.ReviewListCreateView.as_view()),
-    path("reviews/<int:pk>", reviews_views.ReviewPatchDeleteView.as_view()),
+    path("reviews/<int:pk>", reviews_views.ReviewUpdatePatchDeleteView.as_view()),
     path("base-info/", base_info_view.BaseInfoView.as_view())
     ]

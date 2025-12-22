@@ -13,7 +13,7 @@ from ..permissions import IsOfferer
 
 class OfferPagination(PageNumberPagination):
     page_size = 2
-    max_page_size = 5
+    max_page_size = 50
     page_size_query_param = 'page_size'
 
 
@@ -32,7 +32,7 @@ class OffersViewset(viewsets.ModelViewSet):
             permission_classes = [AllowAny]
         elif self.action in ['retrieve']:
             permission_classes = [IsAuthenticated]
-        elif self.action in ['create','update']:
+        elif self.action in ['create','update','partial_update','destroy']:
             permission_classes = [IsOfferer]
         return [permission() for permission in permission_classes]
 
@@ -40,10 +40,12 @@ class OffersViewset(viewsets.ModelViewSet):
         return (offers.Offers.objects
                 .prefetch_related('details')
                 .annotate(min_price=Min('details__price'))
+                .annotate(min_delivery_time=Min('details__delivery_time_in_days'))
                  )
+                 
 
     def get_serializer_class(self):
-        if self.action == 'retrieve':
+        if self.action in ['retrieve','list']:
             return offers_serializers.SingleOfferSerializer
         return self.serializer_class
 

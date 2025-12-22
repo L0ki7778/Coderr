@@ -33,8 +33,10 @@ class ReviewListCreateView(ListCreateAPIView):
         return Response(serializer.data)
 
 
-class ReviewPatchDeleteView(RetrieveUpdateDestroyAPIView):
+class ReviewUpdatePatchDeleteView(RetrieveUpdateDestroyAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = [IsCustomer]
+    permission_classes = []
+    lookup_field = 'pk'
+    
     
